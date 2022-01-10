@@ -49,7 +49,7 @@ auto imgui::update() -> void
             directx::g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
             directx::g_pd3dDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
 
-            ::D3DCOLOR clear_col_dx = D3DCOLOR_RGBA(0, 0, 0, 255);
+            ::D3DCOLOR clear_col_dx = D3DCOLOR_RGBA(menus::settings::r, menus::settings::g, menus::settings::b, 255);
             directx::g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clear_col_dx, 1.0f, 0);
 
             if (directx::g_pd3dDevice->BeginScene() >= 0)

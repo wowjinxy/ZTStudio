@@ -7,9 +7,9 @@
 auto menus::init() -> void
 {
 	auto& io = ImGui::GetIO();
-	io.IniFilename = nullptr;
-
 	auto& s = ImGui::GetStyle();
+
+	io.IniFilename = nullptr;
 
 	s.WindowBorderSize = {};
 	s.WindowPadding = {};
@@ -20,25 +20,67 @@ auto menus::init() -> void
 auto menus::update() -> void
 {
 	menus::main();
+
+	if (menus::states::settings) menus::settings();
 }
 
 auto menus::main() -> void
 {
-	auto& s = ImGui::GetStyle();
-	auto& io = ImGui::GetIO();
-
 	ImGui::SetNextWindowPos({ 0, 0 });
-	ImGui::SetNextWindowSize({ WIDTH, HEIGHT });
+	ImGui::SetNextWindowSize({ WIDTH, 40 });
 
-	ImGui::Begin("ZTStudio", nullptr, ImGuiWindowFlags_NoDecoration);
+	ImGui::Begin("ZTStudio", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus);
 	{
-		ImGui::SetCursorPos({ 5, 5 });
-		ImGui::Text("ZTStudio");
-		ImGui::SetCursorPos({ WIDTH - 20, 5 });
-		if (ImGui::Button("X"))
+		ImGui::BeginTabBar("Tab");
 		{
-			imgui::shutdown = true;
+			if (ImGui::TabItemButton("Settings"))
+			{
+				menus::states::settings = true;
+			}
+
+			if (ImGui::TabItemButton("Close"))
+			{
+				imgui::shutdown = true;
+			}
 		}
+		ImGui::EndTabBar();
 	}
 	ImGui::End();
 }
+
+auto menus::settings() -> void
+{
+	ImGui::SetNextWindowSize({ 300, 300 });
+
+	ImGui::Begin("Settings", &menus::states::settings, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+	{
+		ImGui::BeginChild("Child");
+		{
+			ImGui::Text("Game Path:");
+			ImGui::InputText(" ", menus::settings::game_path, MAX_PATH, ImGuiInputTextFlags_ReadOnly);
+			ImGui::SameLine();
+			ImGui::Button("Browse");
+
+			ImGui::NewLine();
+
+			ImGui::Text("Background Color:");
+			ImGui::SliderInt("R", &menus::settings::r, 0, 255);
+			ImGui::SliderInt("G", &menus::settings::g, 0, 255);
+			ImGui::SliderInt("B", &menus::settings::b, 0, 255);
+		}
+		ImGui::EndChild();
+	}
+	ImGui::End();
+}
+
+//states
+bool menus::states::settings = false;
+//
+
+//settings
+char menus::settings::game_path[MAX_PATH];
+//clear color
+int menus::settings::r = 0.0f;
+int menus::settings::g = 0.0f;
+int menus::settings::b = 0.0f;
+//
